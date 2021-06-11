@@ -2,18 +2,27 @@ provider "aws" {
 	region     = "eu-west-2"
 }
 
-resource "aws_instance" "my_webserver" {
-  ami                    = "ami-089539692cca55c6c"
+data "aws_ami" "latest_linux" {
+  owners      = ["amazon"]
+  most_recent = true
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-hvm-*-x86_64-gp2"]
+  }
+}
+
+resource "aws_instance" "web_server" {
+  ami                    = data.aws_ami.latest_linux.id
   instance_type          = "t2.micro"
-  vpc_security_group_ids = [aws_security_group.my_webserver.id]
+  vpc_security_group_ids = [aws_security_group.web_sg.id]
   user_data              = <<EOF
 	#!/bin/bash
-	yum -y update
-	yum -y install httpd
+	sudo yum -y update
+	sudo yum -y install httpd
 	myip=`curl http://169.254.169.254/latest/meta-data/local-ipv4`
-	echo "<h2>WebServer with IP: $myip</h2><br>Build by Terraform!"  >  /var/www/html/index.html
+	sudo echo "<h2>WebServer with IP: $myip</h2><br>Build by Terraform!"  >  /var/www/html/index.html
 	sudo service httpd start
-	chkconfig httpd on
+	sudo chkconfig httpd on
 EOF
 
   tags = {
@@ -23,25 +32,29 @@ EOF
 }
 
 
-resource "aws_security_group" "my_webserver" {
-  name = "WebServer Security Group"
-  description = "My First SecurityGroup"
+resource "aws_security_group" "web_sg" {
+  name        = "Web_Dsg"
+  description = "Dynamic SecurityGroup for WebServers"
 
-  ingress {
-    from_port = 80
-    to_port = 80
-    protocol = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+  dynamic "ingress" {
+    for_each = ["80", "22"]
+    content {
+      from_port   = ingress.value
+      to_port     = ingress.value
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+    }
   }
+
   egress {
-    from_port = 0
-    to_port = 0
-    protocol = "-1"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   tags = {
-    Name = "Web Server SecurityGroup"
+    Name  = "Dynamic SecurityGroup"
     Owner = "Oleksii Pryshchepa"
   }
 }
