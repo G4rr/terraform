@@ -23,7 +23,7 @@ resource "aws_instance" "test_instnc" {
   vpc_security_group_ids = [aws_security_group.web_sg.id]
   key_name               = aws_key_pair.key_web.id
 
-  user_data = file("user_data.sh")
+  user_data = file("user-data.sh")
 
   associate_public_ip_address = true
   tags = {
@@ -74,7 +74,7 @@ resource "aws_launch_configuration" "prod_instnc" {
   security_groups = [aws_security_group.web_sg.id]
   key_name        = aws_key_pair.key_web.id
 
-  user_data = file("user_data.sh")
+  user_data = file("user-data.sh")
 
   lifecycle {
     create_before_destroy = true
