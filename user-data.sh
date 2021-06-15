@@ -6,7 +6,7 @@ myip=`curl http://169.254.169.254/latest/meta-data/local-ipv4`
 
 cat <<EOF > /var/www/html/index.html
 <html>
-<body bgcolor="blue">
+<body bgcolor="red">
 <h2><font color="yellow">Build by Power of Terraform <font color="red"> v0.35</font></h2><br><p>
 <font color="green">Server Private IP: <font color="aqua">$myip<br><br>
 <font color="magenta">
