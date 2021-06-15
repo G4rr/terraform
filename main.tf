@@ -140,10 +140,10 @@ resource "aws_default_subnet" "default_az2" {
 
 resource "local_file" "file1" {
   content  = aws_eip.test_instnc.public_ip
-  filename = "/home/ubuntu/file1.txt"
+  filename = "/home/file1.txt"
 }
 
 resource "local_file" "file2" {
   content  = aws_elb.prod_instnc.dns_name
-  filename = "/home/ubuntu/file2.txt"
+  filename = "/home/file2.txt"
 }
