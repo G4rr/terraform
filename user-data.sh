@@ -2,18 +2,9 @@
 yum -y update
 yum -y install httpd
 
-myip=`curl http://169.254.169.254/latest/meta-data/local-ipv4`
-
-cat <<EOF > /var/www/html/index.html
-<html>
-<body bgcolor="red">
-<h2><font color="yellow">Build by Power of Terraform <font color="red"> v0.35</font></h2><br><p>
-<font color="green">Server Private IP: <font color="aqua">$myip<br><br>
-<font color="magenta">
-<b>Version 4.0</b>
-</body>
-</html>
-EOF
+sudo yum install git -y
+cd; git clone https://github.com/G4rr/Final_project.git
+sudo mv Final_project/* /var/www/html/
 
 sudo service httpd start
 chkconfig httpd on
