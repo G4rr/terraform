@@ -51,7 +51,7 @@ resource "aws_launch_configuration" "prod_instnc" {
   image_id        = data.aws_ami.latest_linux.id
   instance_type   = "t2.micro"
   security_groups = [aws_security_group.web_sg.id]
-  key_name        = aws_key_pair.key_web.id
+  #key_name        = aws_key_pair.key_web.id
 
   user_data = file("user-data.sh")
 
